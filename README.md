@@ -223,12 +223,6 @@ order by release_year desc;
 - [ ] Add CI (GitHub Actions) to run `dbt build` on every pull request
 - [ ] Expose the marts through a BI dashboard (e.g., Tableau, Looker, Streamlit)
 
-## License
-
-This project is licensed under the MIT License — see the `LICENSE` file for details.
-
----
-
 <p align="center">
   <sub>Built with Terraform · AWS S3 · Snowflake · dbt</sub>
 </p>
