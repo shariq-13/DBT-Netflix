@@ -104,9 +104,16 @@ by_year · by_genre · top_actors")]
 │   └── iam/                     AWS IAM policy templates (placeholders, no real IDs)
 ├── dbt/                          dbt project (profile: dbt_snowflake)
 │   ├── models/
-│   │   ├── staging/             stg_netflix_titles, stg_credits (+ sources, tests)
-│   │   ├── intermediate/        int_netflix_titles_enriched
-│   │   └── marts/                mart_titles_by_year, mart_titles_by_genre, mart_top_actors
+│   │   ├── staging/
+│   │   │   ├── stg_netflix_titles.sql        view
+│   │   │   └── stg_credits.sql                view
+│   │   ├── intermediate/
+│   │   │   ├── int_netflix_titles_enriched.sql  ephemeral
+│   │   │   └── int_actor_titles.sql              incremental
+│   │   └── marts/                               (Gold layer)
+│   │       ├── mart_titles_by_year.sql        table
+│   │       ├── mart_titles_by_genre.sql       table
+│   │       └── mart_top_actors.sql            table
 │   ├── macros/                   generate_schema_name (lands models in real schemas)
 │   ├── tests/                    generic (not_negative) + singular (assert_no_future_release_year)
 │   └── profiles.example.yml
@@ -125,11 +132,31 @@ by_year · by_genre · top_actors")]
 
 ## Data Model
 
+```
+RAW
+ │
+ ▼
+STAGING        views
+ │
+ ▼
+INTERMEDIATE   ephemeral / incremental
+ │
+ ▼
+MARTS          ← Gold layer
+ ├── mart_titles_by_year
+ ├── mart_titles_by_genre
+ └── mart_top_actors
+```
+
 | Layer | Model | Materialization | Schema |
 |---|---|---|---|
-| staging | `stg_netflix_titles`, `stg_credits` | view | `STAGING` |
-| intermediate | `int_netflix_titles_enriched` | view | `INTERMEDIATE` |
-| marts | `mart_titles_by_year`, `mart_titles_by_genre`, `mart_top_actors` | table | `MARTS` |
+| staging | `stg_netflix_titles` | view | `STAGING` |
+| staging | `stg_credits` | view | `STAGING` |
+| intermediate | `int_netflix_titles_enriched` | ephemeral | `INTERMEDIATE` |
+| intermediate | `int_actor_titles` | incremental | `INTERMEDIATE` |
+| marts (Gold) | `mart_titles_by_year` | table | `MARTS` |
+| marts (Gold) | `mart_titles_by_genre` | table | `MARTS` |
+| marts (Gold) | `mart_top_actors` | table | `MARTS` |
 
 ## Tech Stack
 
@@ -221,7 +248,6 @@ order by release_year desc;
 - [ ] Automate S3 uploads with a scheduled job instead of manual `aws s3 cp`
 - [ ] Add incremental models for larger, regularly-refreshed datasets
 - [ ] Add CI (GitHub Actions) to run `dbt build` on every pull request
-- [ ] Expose the marts through a BI dashboard (e.g., Tableau, Looker, Streamlit)
 
 <p align="center">
   <sub>Built with Terraform · AWS S3 · Snowflake · dbt</sub>
