@@ -116,7 +116,6 @@ by_year · by_genre · top_actors")]
 │   │       └── mart_top_actors.sql            table
 │   ├── macros/                   generate_schema_name (lands models in real schemas)
 │   ├── tests/                    generic (not_negative) + singular (assert_no_future_release_year)
-│   └── profiles.example.yml
 └── data/                          Source CSVs (credits, netflix_titles)
 ```
 
@@ -131,6 +130,10 @@ by_year · by_genre · top_actors")]
 > vs `credits.id` = `tm84618`) and do **not** join. Each is modeled independently.
 
 ## Data Model
+
+<p align="center">
+  <img src="images/dbt_model_flow.png" alt="dbt medallion flow: RAW to STAGING views to INTERMEDIATE ephemeral/incremental models to MARTS Gold layer" width="600">
+</p>
 
 ```
 RAW
@@ -248,7 +251,7 @@ order by release_year desc;
 - [ ] Automate S3 uploads with a scheduled job instead of manual `aws s3 cp`
 - [ ] Add incremental models for larger, regularly-refreshed datasets
 - [ ] Add CI (GitHub Actions) to run `dbt build` on every pull request
-
+- [ ] Expose the marts through a BI dashboard (e.g., Tableau, Looker, Streamlit)
 <p align="center">
   <sub>Built with Terraform · AWS S3 · Snowflake · dbt</sub>
 </p>
