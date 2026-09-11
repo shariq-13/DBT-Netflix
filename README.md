@@ -59,6 +59,7 @@ staging → intermediate → marts layering in **dbt**, with tests enforced at e
 ## Architecture
 
 <p align="center">
+  <img width="1460" height="863" alt="Flow" src="https://github.com/user-attachments/assets/8c502e91-1954-4265-88dc-17811c88d91e"/>
   <img src="Architecture%20Diagram.png" alt="Architecture Diagram: local CSV to S3 to Snowflake external stage to raw tables to dbt models" width="720">
   <br>
   <sub>local CSV → S3 (raw/) → Snowflake external stage → COPY INTO raw tables → dbt models</sub>
